@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏚️ Rumah Hantu Logika</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .screen {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Intro Screen */
+        .intro-title {
+            font-size: 3em;
+            color: #ff6b6b;
+            text-shadow: 0 0 20px #ff0000;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+            text-align: center;
+        }
+
+        .intro-text {
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #ddd;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        /* Login/Game Box */
+        .game-box {
+            background: rgba(0, 0, 0, 0.9);
+            border: 4px solid #ff6b6b;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+        }
+
+        .title {
+            font-size: 2.5em;
+            color: #ff6b6b;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .input-group {
+            margin: 25px 0;
+        }
+
+        label {
+            display: block;
+            font-size: 1.3em;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ff6b6b;
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Ghost Selection */
+        .ghost-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .ghost-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 3px solid #666;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .ghost-card:hover {
+            transform: scale(1.05);
+            border-color: #ff6b6b;
+        }
+
+        .ghost-card.selected {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .ghost-emoji {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .ghost-name {
+            font-size: 1.5em;
+            color: #ff6b6b;
+            margin: 10px 0;
+        }
+
+        .ghost-desc {
+            font-size: 0.9em;
+            color: #aaa;
+            margin: 10px 0;
+        }
+
+        .ghost-power {
+            font-size: 1em;
+            color: #ffd700;
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            color: #fff;
+            border: 2px solid #ff0000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            color: #fff;
+            border: 2px solid #20bf6b;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(38, 222, 129, 0.5);
+        }
+
+        .btn-full {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            text-align: center;
+        }
+
+        .status-label {
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        .status-value {
+            font-size: 1.5em;
+            color: #ffd700;
+            margin-top: 5px;
+        }
+
+        /* Question */
+        .question-title {
+            font-size: 1.8em;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #ddd;
+            margin: 20px 0;
+            white-space: pre-line;
+        }
+
+        .answer-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .answer-buttons .btn {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Result Message */
+        .result-message {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            text-align: center;
+            white-space: pre-line;
+        }
+
+        .result-correct {
+            background: rgba(38, 222, 129, 0.2);
+            border: 2px solid #26de81;
+            color: #26de81;
+        }
+
+        .result-wrong {
+            background: rgba(255, 71, 87, 0.2);
+            border: 2px solid #ff4757;
+            color: #ff4757;
+        }
+
+        /* Tutorial */
+        .tutorial-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .tutorial-item h3 {
+            color: #ff6b6b;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-item p {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        /* Game Over */
+        .gameover-title {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px currentColor;
+        }
+
+        .gameover-win {
+            color: #ffd700;
+        }
+
+        .gameover-lose {
+            color: #ff4757;
+        }
+
+        .stats-box {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            font-size: 1.3em;
+            margin: 15px 0;
+            color: #ddd;
+            text-align: center;
+        }
+
+        .stat-value {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Floating Background */
+        .ghost-float {
+            position: fixed;
+            font-size: 3em;
+            opacity: 0.1;
+            animation: float 10s infinite ease-in-out;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-30px) translateX(20px); }
+            50% { transform: translateY(-60px) translateX(-20px); }
+            75% { transform: translateY(-30px) translateX(20px); }
+        }
+
+        @media (max-width: 768px) {
+            .intro-title {
+                font-size: 2em;
+            }
+            .title {
+                font-size: 1.8em;
+            }
+            .answer-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Intro Screen -->
+        <div id="introScreen" class="screen">
+            <h1 class="intro-title">🏚️ RUMAH HANTU LOGIKA 🏚️</h1>
+            <div class="intro-text">
+                <p>🌙 Malam yang kelam...</p>
+                <p>Kamu tersesat di dalam rumah hantu yang terkutuk...</p>
+                <p>Untuk keluar, kamu harus menyelesaikan teka-teki logika matematika...</p>
+                <p>Setiap jawaban salah akan mengurangi NYAWA mu...</p>
+                <p>Jika nyawa habis... kamu akan TERJEBAK SELAMANYA! 💀</p>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="showLogin()">
+                    MASUK KE RUMAH HANTU
+                </button>
+            </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen hidden">
+            <div class="game-box">
+                <h2 class="title">🎭 TRANSFORMASI MENJADI HANTU 🎭</h2>
+                
+                <div class="input-group">
+                    <label for="playerName">👤 Siapa nama mu, pemberani?</label>
+                    <input type="text" id="playerName" placeholder="Masukkan nama mu...">
+                </div>
+
+                <div class="input-group">
+                    <label>💀 Pilih Jenis Hantu Mu:</label>
+                    <div class="ghost-grid" id="ghostGrid"></div>
+                </div>
+
+                <button class="btn btn-success btn-full" onclick="startGame()">
+                    MULAI PETUALANGAN
+                </button>
+            </div>
+        </div>
+
+        <!-- Tutorial Screen -->
+        <div id="tutorialScreen" class="screen hidden">
+            <div class="game-box" style="border-color: #ffd700;">
+                <h2 class="title" style="color: #ffd700;">📚 BUKU MANTRA LOGIKA MATEMATIKA 📚</h2>
+                
+                <div class="tutorial-item">
+                    <h3>1. 🔮 NEGASI (¬)</h3>
+                    <p>Kebalikan dari pernyataan. ¬BENAR = SALAH | ¬SALAH = BENAR</p>
+                </div>
+                
+                <div class="tutorial-item">
+                    <h3>2. 🔮 KONJUNGSI (∧)</h3>
+                    <p>DAN - Benar jika KEDUA pernyataan benar. BENAR ∧ BENAR = BENAR | Lainnya = SALAH</p>
+                </div>
+                
+                <div class="tutorial-item">
+                    <h3>3. 🔮 DISJUNGSI (∨)</h3>
+                    <p>ATAU - Benar jika SALAH SATU benar. SALAH ∨ SALAH = SALAH | Lainnya = BENAR</p>
+                </div>
+                
+                <div class="tutorial-item">
+                    <h3>4. 🔮 IMPLIKASI (→)</h3>
+                    <p>Jika...maka... BENAR → SALAH = SALAH | Lainnya = BENAR</p>
+                </div>
+                
+                <div class="tutorial-item">
+                    <h3>5. 🔮 BIIMPLIKASI (↔)</h3>
+                    <p>Jika dan hanya jika. Keduanya SAMA = BENAR | Berbeda = SALAH</p>
+                </div>
+                
+                <button class="btn btn-success btn-full" onclick="showGameScreen()">
+                    ⚡ MEMASUKI RUMAH HANTU
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen hidden">
+            <div class="status-bar">
+                <div>
+                    <div class="status-label">Hantu</div>
+                    <div class="status-value" id="ghostDisplay"></div>
+                </div>
+                <div>
+                    <div class="status-label">Nyawa</div>
+                    <div class="status-value" id="livesDisplay"></div>
+                </div>
+                <div>
+                    <div class="status-label">Ruangan</div>
+                    <div class="status-value" id="levelDisplay"></div>
+                </div>
+                <div>
+                    <div class="status-label">Skor</div>
+                    <div class="status-value" id="scoreDisplay"></div>
+                </div>
+            </div>
+
+            <div class="game-box">
+                <div class="question-title" id="questionTitle"></div>
+                <div class="question-text" id="questionText"></div>
+                
+                <div class="answer-buttons">
+                    <button class="btn btn-success" onclick="checkAnswer(true)">
+                        ✓ BENAR
+                    </button>
+                    <button class="btn btn-primary" onclick="checkAnswer(false)">
+                        ✗ SALAH
+                    </button>
+                </div>
+
+                <div id="resultMessage"></div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="screen hidden">
+            <h1 class="gameover-title" id="gameOverTitle"></h1>
+            
+            <div class="stats-box">
+                <h3 style="color: #ffd700; font-size: 2em; margin-bottom: 20px; text-align: center;">📊 Statistik Akhir</h3>
+                <div class="stat-item" id="finalGhost"></div>
+                <div class="stat-item">
+                    🚪 Ruangan tercapai: <span class="stat-value" id="finalLevel"></span>
+                </div>
+                <div class="stat-item">
+                    ⭐ Total skor: <span class="stat-value" id="finalScore"></span>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-success" onclick="location.reload()">
+                    🔄 MAIN LAGI
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating ghosts -->
+    <div class="ghost-float" style="top: 10%; left: 10%;">👻</div>
+    <div class="ghost-float" style="top: 20%; right: 15%; animation-delay: 2s;">🧟</div>
+    <div class="ghost-float" style="bottom: 15%; left: 20%; animation-delay: 4s;">👹</div>
+    <div class="ghost-float" style="bottom: 25%; right: 10%; animation-delay: 6s;">💀</div>
+
+    <script>
+        const ghosts = [
+            { name: "KUNTILANAK", emoji: "👻", power: "Tawa Mengerikan", desc: "Hantu wanita berambut panjang yang suka menakuti di malam hari" },
+            { name: "POCONG", emoji: "🧟", power: "Lompatan Mistis", desc: "Hantu berkafan putih yang melompat-lompat mencari korban" },
+            { name: "GENDERUWO", emoji: "👹", power: "Kekuatan Gaib", desc: "Hantu berbulu hitam dengan kekuatan supernatural yang mengerikan" }
+        ];
+
+        const scaryStatements = {
+            p: [
+                "Ada suara tangisan di kamar sebelah",
+                "Pintu terbuka sendiri tengah malam",
+                "Bayangan hitam melintas di koridor",
+                "Lampu mati mendadak tanpa sebab",
+                "Terdengar langkah kaki di loteng",
+                "Cermin retak dengan sendirinya",
+                "Suara ketukan di jendela",
+                "Kabut hitam menutupi ruangan"
+            ],
+            q: [
+                "Kamu harus segera lari",
+                "Hantu sedang mendekat",
+                "Kamu dalam bahaya",
+                "Ada sesuatu di belakangmu",
+                "Ruangan ini terkutuk",
+                "Jiwamu terancam",
+                "Kematian menghampiri",
+                "Arwah gentayangan berkeliaran"
+            ]
+        };
+
+        let gameState = {
+            playerName: "",
+            selectedGhost: null,
+            lives: 3,
+            level: 1,
+            score: 0,
+            maxLevel: 10,
+            currentAnswer: null,
+            currentExplanation: ""
+        };
+
+        // Initialize ghost cards
+        function initGhosts() {
+            const grid = document.getElementById('ghostGrid');
+            ghosts.forEach((ghost, idx) => {
+                const card = document.createElement('div');
+                card.className = 'ghost-card';
+                card.onclick = () => selectGhost(idx);
+                card.innerHTML = `
+                    <div class="ghost-emoji">${ghost.emoji}</div>
+                    <div class="ghost-name">${ghost.name}</div>
+                    <div class="ghost-desc">${ghost.desc}</div>
+                    <div class="ghost-power">⚡ ${ghost.power}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function showLogin() {
+            showScreen('loginScreen');
+        }
+
+        function selectGhost(index) {
+            document.querySelectorAll('.ghost-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.ghost-card')[index].classList.add('selected');
+            gameState.selectedGhost = index;
+        }
+
+        function startGame() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) {
+                alert('⚠️ Masukkan nama mu terlebih dahulu!');
+                return;
+            }
+            if (gameState.selectedGhost === null) {
+                alert('⚠️ Pilih hantu mu terlebih dahulu!');
+                return;
+            }
+            gameState.playerName = name;
+            showScreen('tutorialScreen');
+        }
+
+        function showGameScreen() {
+            showScreen('gameScreen');
+            updateDisplay();
+            generateQuestion();
+        }
+
+        function updateDisplay() {
+            const ghost = ghosts[gameState.selectedGhost];
+            document.getElementById('ghostDisplay').textContent = `${ghost.emoji} ${ghost.name}`;
+            document.getElementById('livesDisplay').textContent = '💖'.repeat(gameState.lives) + '💔'.repeat(3 - gameState.lives);
+            document.getElementById('levelDisplay').textContent = `${gameState.level}/${gameState.maxLevel}`;
+            document.getElementById('scoreDisplay').textContent = gameState.score;
+        }
+
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generateQuestion() {
+            const p = Math.random() > 0.5;
+            const q = Math.random() > 0.5;
+            const pStr = p ? "BENAR" : "SALAH";
+            const qStr = q ? "BENAR" : "SALAH";
+            
+            const stmtP = getRandom(scaryStatements.p);
+            const stmtQ = getRandom(scaryStatements.q);
+
+            let question, answer, explanation, title;
+
+            if (gameState.level <= 2) {
+                title = "👻 NEGASI";
+                question = `'${stmtP}' adalah ${pStr}\n\nMaka NEGASINYA adalah?`;
+                answer = !p;
+                explanation = `¬${pStr} = ${answer ? "BENAR" : "SALAH"}`;
+            } else if (gameState.level <= 4) {
+                title = "👻 KONJUNGSI";
+                question = `'${stmtP}' adalah ${pStr} DAN\n'${stmtQ}' adalah ${qStr}\n\nMaka hasilnya?`;
+                answer = p && q;
+                explanation = `${pStr} ∧ ${qStr} = ${answer ? "BENAR" : "SALAH"}`;
+            } else if (gameState.level <= 6) {
+                title = "👻 DISJUNGSI";
+                question = `'${stmtP}' adalah ${pStr} ATAU\n'${stmtQ}' adalah ${qStr}\n\nMaka hasilnya?`;
+                answer = p || q;
+                explanation = `${pStr} ∨ ${qStr} = ${answer ? "BENAR" : "SALAH"}`;
+            } else if (gameState.level <= 8) {
+                title = "👻 IMPLIKASI";
+                question = `JIKA '${stmtP}' adalah ${pStr}\nMAKA '${stmtQ}' adalah ${qStr}\n\nHasilnya?`;
+                answer = !p || q;
+                explanation = `${pStr} → ${qStr} = ${answer ? "BENAR" : "SALAH"}`;
+            } else {
+                title = "👻 BIIMPLIKASI";
+                question = `'${stmtP}' adalah ${pStr}\nJIKA DAN HANYA JIKA '${stmtQ}' adalah ${qStr}\n\nHasilnya?`;
+                answer = p === q;
+                explanation = `${pStr} ↔ ${qStr} = ${answer ? "BENAR" : "SALAH"}`;
+            }
+
+            gameState.currentAnswer = answer;
+            gameState.currentExplanation = explanation;
+
+            document.getElementById('questionTitle').textContent = title;
+            document.getElementById('questionText').textContent = question;
+            document.getElementById('resultMessage').innerHTML = '';
+        }
+
+        function checkAnswer(userAnswer) {
+            const resultDiv = document.getElementById('resultMessage');
+            const ghost = ghosts[gameState.selectedGhost];
+
+            if (userAnswer === gameState.currentAnswer) {
+                const points = 10 * gameState.level;
+                gameState.score += points;
+                gameState.level++;
+
+                resultDiv.className = 'result-message result-correct';
+                resultDiv.textContent = `✅ BENAR! ${gameState.currentExplanation}\n⚡ ${ghost.power} memberikan +${points} poin!\n🚪 Pintu terbuka... Lanjut ke ruangan berikutnya!`;
+
+                setTimeout(() => {
+                    if (gameState.level > gameState.maxLevel) {
+                        showGameOver(true);
+                    } else {
+                        updateDisplay();
+                        generateQuestion();
+                    }
+                }, 3000);
+            } else {
+                gameState.lives--;
+
+                resultDiv.className = 'result-message result-wrong';
+                resultDiv.textContent = `❌ SALAH! ${gameState.currentExplanation}\n💔 Hantu lain menyerangmu! Nyawa tersisa: ${gameState.lives}`;
+
+                updateDisplay();
+
+                if (gameState.lives <= 0) {
+                    setTimeout(() => showGameOver(false), 2000);
+                } else {
+                    setTimeout(() => generateQuestion(), 3000);
+                }
+            }
+        }
+
+        function showGameOver(isWin) {
+            showScreen('gameOverScreen');
+
+            const ghost = ghosts[gameState.selectedGhost];
+            const titleEl = document.getElementById('gameOverTitle');
+
+            if (isWin) {
+                titleEl.textContent = '🎉 SELAMAT! KAMU BERHASIL KELUAR! 🎉';
+                titleEl.className = 'gameover-title gameover-win';
+            } else {
+                titleEl.textContent = '⚰️ GAME OVER - TERJEBAK SELAMANYA ⚰️';
+                titleEl.className = 'gameover-title gameover-lose';
+            }
+
+            document.getElementById('finalGhost').innerHTML = `${ghost.emoji} Hantu: <span class="stat-value">${ghost.name} (${gameState.playerName})</span>`;
+            document.getElementById('finalLevel').textContent = `${gameState.level - 1}/${gameState.maxLevel}`;
+            document.getElementById('finalScore').textContent = gameState.score;
+        }
+
+        // Initialize on load
+        initGhosts();
+    </script>
+</body>
+</html>
